@@ -66,9 +66,15 @@ public class GCCommand extends Command {
                         break;
                     case "chat":
                         //If the player is in a group they can use this to send a message.
+                        if(args.length < 2) {
+                            sendMsg(p, ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "Please provide text.");
+                            break;
+                        }
+                        GroupCommand.chat(p, args[1]);
                         break;
                     case "togglechat":
                         //If the player is in a group they can use this command to toggle sending messages in the group chat without typing the command.
+                        GroupCommand.toggleChat(p);
                         break;
                     case "invite":
                         //If the player is the group leader they can attempt to invite players to their group.
