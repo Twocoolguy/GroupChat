@@ -140,7 +140,7 @@ public class GroupCommand {
             player.sendMessage(player.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You cannot leave a group if you are not in one."));
             return false;
         }
-        if(group.getLeader().equals(gp)) {
+        if(group.getLeader().equals(gp.getUUID())) {
             player.sendMessage(player.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You cannot leave the group if you are the leader. You must disband or transfer leadership."));
             return false;
         }
@@ -180,6 +180,10 @@ public class GroupCommand {
     public static boolean transferLeader(ProxiedPlayer sender, String otherPlayer) {
         GroupPlayer gp = getGroupPlayer(sender.getUniqueId());
         Group group = getGroupById(gp.getGroup());
+        if(sender.getDisplayName().equals(otherPlayer)) {
+            sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You cannot transfer leadership to yourself."));
+            return false;
+        }
         if(group == null) {
             sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You cannot transfer leadership if you aren't in a group."));
             return false;
@@ -212,7 +216,7 @@ public class GroupCommand {
     }
 
     // Sends a chat message to the group.
-    public boolean chat(ProxiedPlayer sender, String message) {
+    public static boolean chat(ProxiedPlayer sender, String message) {
         Group gp = getGroupById(getGroupPlayer(sender.getUniqueId()).getGroup());
         if(gp == null) {
             sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You cannot send a group chat message if you aren't in a group."));
@@ -224,7 +228,7 @@ public class GroupCommand {
 
 
     // Toggles auto message sending into group.
-    public boolean toggleChat(ProxiedPlayer sender) {
+    public static boolean toggleChat(ProxiedPlayer sender) {
         GroupPlayer gp = getGroupPlayer(sender.getUniqueId());
         if(gp.getGroup() == -1) {
             sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You must be in a group in order to perform this command."));
