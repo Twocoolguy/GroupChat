@@ -39,6 +39,10 @@ public class GroupPlayer {
         this.group = group;
     }
 
+    // Sets the online boolean to what it says
+    public void setOnline(boolean online) { this.online = online; }
+
+    // Checks if the player is online.
     public boolean isOnline() { return this.online; }
 
     // Checks if the two UUID objects are equal
