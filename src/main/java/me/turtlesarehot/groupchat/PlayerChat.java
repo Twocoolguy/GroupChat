@@ -14,7 +14,7 @@ public class PlayerChat implements Listener {
             ProxiedPlayer sender = (ProxiedPlayer) event.getSender();
             GroupPlayer gp = GroupCommand.getGroupPlayer(sender.getUniqueId());
             if(gp != null && gp.isChatToggled()) {
-                gp.getGroup().sendMessage(ChatColor.GREEN + "[Group] " + ChatColor.YELLOW + sender.getDisplayName() + ": " + event.getMessage());
+                GroupCommand.getGroupById(gp.getGroup()).sendMessage(ChatColor.GREEN + "[Group] " + ChatColor.YELLOW + sender.getDisplayName() + ": " + event.getMessage());
             }
         }
     }
