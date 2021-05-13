@@ -77,7 +77,7 @@ public class GroupCommand {
             return false;
         }
         groupCount++;
-        Group g = new Group(you, groupCount);
+        Group g = new Group(you.getUUID(), groupCount);
         you.setGroup(g.getId());
         editMember(player.getUniqueId(), you);
         groups.add(g);
@@ -111,17 +111,18 @@ public class GroupCommand {
         player.sendMessage(player.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "Group Info"));
 
         // First, check for the party leader
-        if(playerGroup.getLeader().isOnline(onlinePlayers)) {
-            player.sendMessage(player.getUniqueId(), new TextComponent(ChatColor.YELLOW + "LEADER " + playerGroup.getLeader().getUsername() + " - " + ChatColor.GREEN + "ONLINE"));
+        GroupPlayer leader = getGroupPlayer(playerGroup.getLeader());
+        if(leader.isOnline()) {
+            player.sendMessage(player.getUniqueId(), new TextComponent(ChatColor.YELLOW + "LEADER " + leader.getUsername() + " - " + ChatColor.GREEN + "ONLINE"));
         }
         else {
-            player.sendMessage(player.getUniqueId(), new TextComponent(ChatColor.YELLOW + "LEADER " + playerGroup.getLeader().getUsername() + " - " + ChatColor.RED + "OFFLINE"));
+            player.sendMessage(player.getUniqueId(), new TextComponent(ChatColor.YELLOW + "LEADER " + leader.getUsername() + " - " + ChatColor.RED + "OFFLINE"));
         }
 
         // Second, check for the rest of the members.
         for(int i = 0; i < playerGroup.getMembers().size(); i++) {
-            GroupPlayer gp = playerGroup.getMembers().get(i);
-            if(gp.isOnline(onlinePlayers)) {
+            GroupPlayer gp = getGroupPlayer(playerGroup.getMembers().get(i));
+            if(gp.isOnline()) {
                 player.sendMessage(player.getUniqueId(), new TextComponent(ChatColor.YELLOW + "MEMBER " + gp.getUsername() + " - " + ChatColor.GREEN + "ONLINE"));
             }
             else {
@@ -157,7 +158,7 @@ public class GroupCommand {
             sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You cannot kick a player from a group if you aren't in a group."));
             return false;
         }
-        if(!(group.getLeader().getUUID().equals(sender.getUniqueId()))) {
+        if(!(group.getLeader().equals(sender.getUniqueId()))) {
             sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You are not the leader of your group so you cannot kick members."));
             return false;
         }
@@ -183,7 +184,7 @@ public class GroupCommand {
             sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You cannot transfer leadership if you aren't in a group."));
             return false;
         }
-        if(!(group.getLeader().getUUID().equals(sender.getUniqueId()))) {
+        if(!(group.getLeader().equals(sender.getUniqueId()))) {
             sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You are not the leader of your group so you cannot transfer leadership."));
             return false;
         }
@@ -197,8 +198,8 @@ public class GroupCommand {
             return false;
         }
         group.removeMember(op);
-        group.setLeader(op);
-        group.addMember(gp);
+        group.setLeader(op.getUUID());
+        group.addMember(gp.getUUID());
         editGroup(group);
         group.sendMessage(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "The leader transferred leadership to " + otherPlayer);
         return true;
@@ -238,16 +239,30 @@ public class GroupCommand {
 
     // Invites a player to the group.
     public boolean invite(ProxiedPlayer sender, String otherPlayer) {
-        if(getGroupPlayer(otherPlayer) != null) {
+        GroupPlayer p = getGroupPlayer(otherPlayer);
+        GroupPlayer send = getGroupPlayer(sender.getUniqueId());
+        if(send.getGroup() == -1) {
+            sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You are not in a group."));
+            return false;
+        }
+        Group gp = getGroupById(send.getGroup());
+        if(!(gp.getLeader().equals(sender.getUniqueId()))) {
+            sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "You are not the leader of the group so you cannot invite people."));
+            return false;
+        }
+        if(p == null) {
+            sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "This player hasn't been on the server since proxy started or doesn't exist."));
+            return false;
+        }
+        if(!(p.isOnline())) {
+            sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "This player isn't online."));
+            return false;
+        }
+        if(p.getGroup() != -1) {
             sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "This user is already in a group."));
             return false;
         }
-        ProxiedPlayer p = getPlayer(otherPlayer);
-        if(p == null) {
-            sender.sendMessage(sender.getUniqueId(), new TextComponent(ChatColor.GREEN + "[GroupChat] " + ChatColor.YELLOW + "This user is either offline or not a user."));
-            return false;
-        }
-
+        // send invite here.
         return true;
     }
 }
