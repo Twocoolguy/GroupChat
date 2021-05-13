@@ -9,17 +9,17 @@ public class GroupPlayer {
     private UUID player;
     private String username;
     private boolean chatToggled;
-    private Group group;
+    private int group;
 
     public GroupPlayer(UUID player, String username) {
         this.player = player;
         this.username = username;
         this.chatToggled = false;
-        this.group = null;
+        this.group = -1;
     }
 
     //returns the group that the player is in.
-    public Group getGroup() { return this.group; }
+    public int getGroup() { return this.group; }
 
     //returns if the group chat is toggled.
     public boolean isChatToggled() { return this.chatToggled; }
@@ -33,7 +33,7 @@ public class GroupPlayer {
     }
 
     //Sets the players group
-    public void setGroup(Group group) {
+    public void setGroup(int group) {
         this.group = group;
     }
 
