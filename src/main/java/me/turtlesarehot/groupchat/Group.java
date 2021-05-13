@@ -57,9 +57,16 @@ public class Group {
             allPlayers.addAll(entry.getValue().getPlayers());
         }
         for(int i = 0; i < allPlayers.size(); i++) {
-            if(this.members.contains(allPlayers.get(i).getUniqueId())) {
+            if(this.leader.equals(allPlayers.get(i).getUniqueId())) {
                 allPlayers.get(i).sendMessage(allPlayers.get(i).getUniqueId(), new TextComponent(message));
+                continue;
             }
+            for(int j = 0; j < this.members.size(); j++) {
+                if(this.members.get(j).equals(allPlayers.get(i).getUniqueId())) {
+                    allPlayers.get(i).sendMessage(allPlayers.get(i).getUniqueId(), new TextComponent(message));
+                }
+            }
+
         }
     }
 
