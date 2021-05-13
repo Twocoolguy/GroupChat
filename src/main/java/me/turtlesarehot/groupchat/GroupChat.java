@@ -8,5 +8,6 @@ public class GroupChat extends Plugin {
     @Override
     public void onEnable() {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new GCCommand());
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new PlayerChat());
     }
 }
