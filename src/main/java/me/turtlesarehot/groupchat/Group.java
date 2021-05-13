@@ -14,11 +14,12 @@ public class Group {
 
     private GroupPlayer leader;
     private ArrayList<GroupPlayer> members;
+    private int id;
 
-
-    public Group(GroupPlayer leader) {
+    public Group(GroupPlayer leader, int id) {
         this.leader = leader;
         this.members = new ArrayList<GroupPlayer>();
+        this.id = id;
     }
 
     // Returns the UUID of the leader of the group.
@@ -26,6 +27,9 @@ public class Group {
 
     // Returns the UUIDs of the members of the group (doesn't include leader).
     public ArrayList<GroupPlayer> getMembers() { return this.members; }
+
+    // Gets the group ID.
+    public int getId() { return this.id; }
 
     // Returns the total number of members
     public int memberCount() { return this.members.size() + 1; }
@@ -65,5 +69,6 @@ public class Group {
             }
         }
     }
+
 }
 
