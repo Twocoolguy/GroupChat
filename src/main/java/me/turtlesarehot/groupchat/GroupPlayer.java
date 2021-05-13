@@ -10,12 +10,14 @@ public class GroupPlayer {
     private String username;
     private boolean chatToggled;
     private int group;
+    private boolean online;
 
     public GroupPlayer(UUID player, String username) {
         this.player = player;
         this.username = username;
         this.chatToggled = false;
         this.group = -1;
+        this.online = true;
     }
 
     //returns the group that the player is in.
@@ -37,14 +39,7 @@ public class GroupPlayer {
         this.group = group;
     }
 
-    public boolean isOnline(ArrayList<UUID> onlinePlayers) {
-        for(int i = 0; i < onlinePlayers.size(); i++) {
-            if(onlinePlayers.get(i).equals(this.player)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    public boolean isOnline() { return this.online; }
 
     // Checks if the two UUID objects are equal
     public boolean equals(UUID otherplayer) {
